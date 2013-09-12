@@ -11,6 +11,5 @@ db.js
 -----
 `node db file [flush=true|false]`
 
-inserts the objects in file into the database
-
+inserts the objects in file into the databas
 flush=true will delete from the table before running the insert

@@ -18,7 +18,7 @@ if(allowedFormats.indexOf(process.argv[2]) >= 0){
                 else {
                     var recordSet = result['OAI-PMH']['ListRecords'][0]['record'];
                     var resumptionToken = result['OAI-PMH']['ListRecords'][0]['resumptionToken'][0]['_'];
-                    recordSet.forEach(function(recordItem){ records.push(JSON.stringify(recordItem)); });
+                    recordSet.forEach(function(recordItem){ records.push(recordItem); });
                     if(resumptionToken){ getMoreRecords(resumptionToken); }
                     else finish();
                 }
@@ -39,7 +39,7 @@ function getMoreRecords(token){
                 else {
                     var recordSet = result['OAI-PMH']['ListRecords'][0]['record'];
                     var resumptionToken = result['OAI-PMH']['ListRecords'][0]['resumptionToken'][0]['_'];
-                    recordSet.forEach(function(recordItem){ records.push(JSON.stringify(recordItem)); });
+                    recordSet.forEach(function(recordItem){ records.push(recordItem); });
                     if(resumptionToken && (records.length < maxRecords)){ getMoreRecords(resumptionToken); } 
                     else finish();
                 }
@@ -55,7 +55,8 @@ function finish(){
     var curr_date = ("0" + today.getDate()).slice(-2);
     var curr_month = ("0" + (today.getMonth() + 1)).slice(-2);
     var curr_year = today.getFullYear();
-    fs.writeFile('records' + curr_year + curr_month + curr_date + recordType + '.json', JSON.stringify(records), function(err){
+    var fileName = 'records' + curr_year + curr_month + curr_date + recordType + '.json';
+    fs.writeFile(fileName, JSON.stringify(records), function(err){
         if(err) console.log('problem writing file:' + err);
         else console.log('file written');
     });
