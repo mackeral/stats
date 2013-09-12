@@ -7,9 +7,8 @@ harvest.js
 
 creates a timestamped JSON file of citation objects
 
-db.js
+fillDB.py
 -----
-`node db file [flush=true|false]`
+`python fillDB file`
 
-inserts the objects in file into the databas
-flush=true will delete from the table before running the insert
+inserts the objects in file into the database
