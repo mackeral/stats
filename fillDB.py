@@ -1,5 +1,7 @@
 # fill db
 import sys, json, re
+from citation import Citation
+from pymongo import MongoClient
 
 if len(sys.argv) < 2:
     sys.exit('usage: python fillDB.py fileToIngest.json')
@@ -10,20 +12,20 @@ else:
         sys.exit('fileName in wrong format')
     docType = m.group(1)
     
-    from pymongo import MongoClient
     client = MongoClient();
     db = client.repos
     
-    jsonCitations = open(jsonFile)
-    citations = json.load(jsonCitations)
+    jsonContent = open(jsonFile)
+    jsonCitations = json.load(jsonContent)
     
-    for citation in citations:
+    for jsonCitation in jsonCitations:
         if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
-            del citation["metadata"][0]["oai_dc:dc"][0]["$"]
+            del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
         elif docType in ('oai_etdms'):
-            del citation["metadata"][0]["thesis"][0]["$"]
-        db.citations.insert(citation)
+            del jsonCitation["metadata"][0]["thesis"][0]["$"]
+        db.citations.insert(jsonCitation)
+        citation = Citation(jsonCitation)
     
-    jsonCitations.close()
+    jsonContent.close()
     client.disconnect()    
-    #sys.exit("done. ingested " + str(len(citations)) + " entries")
+    sys.exit("done. ingested " + str(len(jsonCitations)) + " entries")
