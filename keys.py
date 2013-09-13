@@ -31,3 +31,58 @@ else:
     
     print "keys for dataType " + docType + ":"
     print keys
+
+
+"""
+keys for dataType qualified-dublin-core:
+[
+u'dc:creator', 
+u'dc:date.created', 
+u'dc:description', 
+u'dc:description.abstract', 
+u'dc:identifier', 
+u'dc:source'
+u'dc:subject', 
+u'dc:title', 
+u'dc:type', 
+]
+
+keys for dataType simple-dublin-core:
+[
+u'dc:creator', 
+u'dc:date', 
+u'dc:description', 
+u'dc:identifier', 
+u'dc:source'
+u'dc:subject', 
+u'dc:title', 
+u'dc:type', 
+]
+
+keys for dataType oai_etdms:
+[
+u'creator', 
+u'date.created', 
+u'description', 
+u'description.abstract', 
+u'identifier', 
+u'source'
+u'subject', 
+u'title', 
+u'type', 
+]
+
+keys for dataType oai_dc:
+[
+u'dc:creator', 
+u'dc:date', 
+u'dc:description'
+u'dc:format', 
+u'dc:identifier', 
+u'dc:publisher', 
+u'dc:source', 
+u'dc:subject', 
+u'dc:title', 
+u'dc:type', 
+]
+"""

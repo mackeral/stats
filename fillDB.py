@@ -1,7 +1,7 @@
-# fill db
 import sys, json, re
 from citation import Citation
 from pymongo import MongoClient
+from pprint import pprint
 
 if len(sys.argv) < 2:
     sys.exit('usage: python fillDB.py fileToIngest.json')
@@ -17,15 +17,20 @@ else:
     
     jsonContent = open(jsonFile)
     jsonCitations = json.load(jsonContent)
+    jsonContent.close()
+    
+    citations = []
     
     for jsonCitation in jsonCitations:
         if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
             del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
         elif docType in ('oai_etdms'):
             del jsonCitation["metadata"][0]["thesis"][0]["$"]
-        #db.citations.insert(jsonCitation)
-        citation = Citation(jsonCitation, docType)
+        citations.append(Citation(jsonCitation, docType))
     
-    jsonContent.close()
     client.disconnect()    
+    for citation in citations:
+        print citation
+        db.citations.update({ 'identifier': citation.identifier }, citation, { 'upsert': True })
+    
     sys.exit("done. ingested " + str(len(jsonCitations)) + " entries")
