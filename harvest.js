@@ -1,6 +1,6 @@
 var allowedFormats = ['oai_dc','simple-dublin-core','qualified-dublin-core','oai_etdms'];
 var baseURL = 'http://scholarship.law.berkeley.edu/do/oai/?verb=ListRecords&';
-var maxRecords =100;
+var maxRecords =10000;
 var recordType;
 
 if(allowedFormats.indexOf(process.argv[2]) >= 0){
