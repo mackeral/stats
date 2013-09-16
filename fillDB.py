@@ -1,4 +1,4 @@
-import sys, json, re
+import ast, sys, json, re
 from citation import Citation
 from pymongo import MongoClient
 from pprint import pprint
@@ -30,7 +30,9 @@ else:
     
     client.disconnect()    
     for citation in citations:
-        print citation
-        db.citations.update({ 'identifier': citation.identifier }, citation, { 'upsert': True })
+        #print citation.__dict__
+        result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
+        #mongoID = db.citations.insert(citation.__dict__, { 'upsert': True })
+        print result
     
     sys.exit("done. ingested " + str(len(jsonCitations)) + " entries")
