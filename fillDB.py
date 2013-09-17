@@ -12,7 +12,7 @@ else:
         sys.exit('fileName in wrong format')
     docType = m.group(1)
     
-    client = MongoClient();
+    client = MongoClient()
     db = client.repos
     
     jsonContent = open(jsonFile)
@@ -30,9 +30,7 @@ else:
     
     client.disconnect()    
     for citation in citations:
-        #print citation.__dict__
         result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
-        #mongoID = db.citations.insert(citation.__dict__, { 'upsert': True })
         print result
     
     sys.exit("done. ingested " + str(len(jsonCitations)) + " entries")
