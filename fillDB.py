@@ -21,12 +21,16 @@ else:
     
     citations = []
     
+    
+    
     for jsonCitation in jsonCitations:
         if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
             del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
         elif docType in ('oai_etdms'):
             del jsonCitation["metadata"][0]["thesis"][0]["$"]
-        citations.append(Citation(jsonCitation, docType))
+        #don't bring in SelectedWorks citations
+        if not re.match('oai:works.bepress.com:', jsonCitation['header'][0]['identifier'][0]):
+            citations.append(Citation(jsonCitation, docType))
     
     client.disconnect()    
     for citation in citations:
