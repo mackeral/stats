@@ -21,8 +21,6 @@ else:
     
     citations = []
     
-    
-    
     for jsonCitation in jsonCitations:
         if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
             del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
@@ -32,9 +30,9 @@ else:
         if not re.match('oai:works.bepress.com:', jsonCitation['header'][0]['identifier'][0]):
             citations.append(Citation(jsonCitation, docType))
     
-    client.disconnect()    
     for citation in citations:
         result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
         print result
     
-    sys.exit("done. ingested " + str(len(jsonCitations)) + " entries")
+    client.disconnect()    
+    sys.exit("done. ingested " + str(len(citations)) + " entries")

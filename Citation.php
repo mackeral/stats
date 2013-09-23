@@ -3,6 +3,7 @@ class Citation {
 
     var $dateCreated;
     var $datestamp;
+    var $dateIngestedIntoIR;
     var $dcCreator; //dc:creator is the author and there should be multiple listings if there are multiple authors (each one on a new dc:creator field)
     var $dcDate;
     var $dcDateCreated;

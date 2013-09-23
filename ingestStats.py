@@ -1,17 +1,33 @@
-import csv
+import csv, re
+from citation import Citation
+from pymongo import MongoClient
 
-maxI = 10
+client = MongoClient()
+db = client.repos
 
-grid = list(csv.reader(open('dailies.txt', 'r), delimiter='\t'))
+maxI = 50
+
+grid = list(csv.reader(open('monthlies.txt', 'r'), delimiter='\t'))
 grid.pop(0);
 cols = grid.pop(0)
-print cols;
 for i, row in enumerate(grid):
+
     identifier = row[1]
     ingestDate = row[2]
-    print identifier, ingestDate
-    for i, col in row[3:]:
-        print i, col
+
+    # ignore selected works citations
+    if re.match('oai:works.bepress.com:', identifier):
+        continue
+    
+    print 'update db: id {} ingested on {}'.format(identifier, ingestDate)
+    result = db.citations.update({ "dcIdentifier" : identifier}, {"$set": { 'ingestDate': ingestDate }}, True)
+    print result
+
+    j = 3
+
+    for col in row[3:]:
+        print 'stat: {1} downloads on {0}'.format(cols[j], col)
+        j += 1
     if i > maxI:
         break
 
