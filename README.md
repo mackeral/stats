@@ -3,10 +3,14 @@ stats
 
 sysprep/install
 -------
-install mongodb
-(?) sudo apt-get install build-essential python-dev
+install mongodb app
 sudo apt-get install python-pip
 sudo pip install pymongo
+
+harvest xml from bepress
+ingest citation into mongo
+ingest author data into mongo
+
 
 
 workflow
@@ -33,5 +37,7 @@ keys.py
 
 enumerates the metadata keys for the given docType
 
-
+todo
+====
++ bring in additional authors/affiliations; make designations for California Bar, etc. as institutions
 
