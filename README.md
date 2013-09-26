@@ -1,4 +1,4 @@
-stats
+    stats
 =====
 
 sysprep/install
@@ -10,6 +10,7 @@ sudo pip install pymongo
 harvest xml from bepress
 ingest citation into mongo
 ingest author data into mongo
+ingest download statistics int mongo
 
 
 

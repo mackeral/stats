@@ -30,3 +30,6 @@ nonUCBAuthorsSorted = sorted(nonUCBAuthors.iteritems(), key=operator.itemgetter(
 print nonUCBAuthorsSorted[-30:]
 for (nam,num) in nonUCBAuthorsSorted[-30:]:
     print '{}: {}'.format(nam,num)
+
+
+client.disconnect()

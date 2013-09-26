@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import ast, sys, json, re
 from citation import Citation
 from pymongo import MongoClient
@@ -32,7 +34,7 @@ else:
     
     for citation in citations:
         result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
-        print result
+        #print result
     
-    client.disconnect()    
-    sys.exit("done. ingested " + str(len(citations)) + " entries")
+    client.disconnect()
+    sys.exit("done. upserted " + str(len(citations)) + " entries")
