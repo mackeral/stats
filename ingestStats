@@ -51,7 +51,7 @@ else:
         for col in row[3:]:
             m,d,y = cols[j].split('/');
             if int(col) > 0:
-                db.statistics.save({'identifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), int(d))})
+                db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), int(d))})
                 totalStats += 1
             else:
                 pass #print 'zero, not statting {} for {}'.format(identifier, cols[j])
