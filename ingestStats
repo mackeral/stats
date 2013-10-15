@@ -9,7 +9,6 @@ import datetime
 if len(sys.argv) < 2:
     sys.exit('usage: ./ingestStats.py dataWithHeader OR ./ingestStats.py -h=dataWithHeader data')
 else:
-    #client = MongoClient()
     client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
     db = client.repos
     
@@ -44,7 +43,7 @@ else:
             continue
         
         #print 'update db: id {} ingested on {}'.format(identifier, ingestDate)
-        result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDate }}, True)
+        #result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDate }}, True)
         #print result
     
         j = 3
@@ -52,7 +51,8 @@ else:
         for col in row[3:]:
             m,d,y = cols[j].split('/');
             if int(col) > 0:
-                db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), int(d))})
+                #db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), int(d))})
+                db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), 1), 'repo': 'Berkeley Law Scholarship Repository', 'file': dataFile})
                 totalStats += 1
             else:
                 pass #print 'zero, not statting {} for {}'.format(identifier, cols[j])
