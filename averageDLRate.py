@@ -21,7 +21,7 @@ ageBuckets = {}
 #       determine the correct bucket depending on article:ingestDate and statistic:dlDate
 #       addDownloads to that bucket for this statistic (make a bucket if necessary)
 
-statistics = db.statistics.find().limit(1000)
+statistics = db.statistics.find()
 for statistic in statistics:
     if(statistic['dcIdentifier'] in ingestDates):
         ingestDateChunks = ingestDates[statistic['dcIdentifier']].split('/')
@@ -35,7 +35,13 @@ for statistic in statistics:
 
 
 # now we have full buckets
+avgDownloadsFileName = '../Web/stats/avgDownloads.txt'
+avgDownloadsFile = open(avgDownloadsFileName, 'w')
 for bucket in ageBuckets.keys():
-    print bO
+    #pprint(ageBuckets[bucket])
+    avgDownloadsFile.write('{}\t{}\n'.format(ageBuckets[bucket].age, round(float(ageBuckets[bucket].downloads)/ageBuckets[bucket].articles, 2)));
+    
+avgDownloadsFile.close()
 
 client.disconnect()
+print "average downloads per age in months, written to file {}".format(avgDownloadsFileName)
