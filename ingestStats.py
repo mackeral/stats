@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import csv, re, sys
 from citation import Citation
 from pymongo import MongoClient
@@ -42,12 +40,14 @@ else:
         if re.match('http://works.bepress.com', identifier):
             continue
         
+        chunks = ingestDate.split('/')
+        ingestDateD = datetime.datetime(int(chunks[2]), int(chunks[0]), int(chunks[1]))
         #print 'update db: id {} ingested on {}'.format(identifier, ingestDate)
-        #result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDate }}, True)
+        result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDateD }}, True)
         #print result
+        '''
     
         j = 3
-    
         for col in row[3:]:
             m,d,y = cols[j].split('/');
             if int(col) > 0:
@@ -57,6 +57,6 @@ else:
             else:
                 pass #print 'zero, not statting {} for {}'.format(identifier, cols[j])
             j += 1
-
+        '''
     client.disconnect()
     sys.exit("done. ingested " + str(totalStats) + " entries")

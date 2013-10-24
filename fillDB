@@ -14,7 +14,7 @@ else:
         sys.exit('fileName in wrong format')
     docType = m.group(1)
     
-    client = MongoClient()
+    client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
     db = client.repos
     
     jsonContent = open(jsonFile)
