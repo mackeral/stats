@@ -1,11 +1,31 @@
+201311
+
+model
+=====
+harvester runs locally on Mike's machine
++ works with mongolab db
++ initial harvest
+++ OAI_PMH grab of entire db, saved as json
+++ 
++ selective harvest (additions to, modifications of, deletions from initial harvest)
+
+webserver runs on webdev
++ queries mongolab db
+
+
+usage
+=====
+
+
 stats
 =====
 
 sysprep/install
 -------
-install mongodb app
-sudo apt-get install python-pip
-sudo pip install pymongo
+node
+python
+pymongo
++ make sure you use the location of the python that has the modules installed. E.g. my local /usr/bin/python doesn't have pymongo but /usr/local/bin/python does
 
 harvest xml from bepress
 ingest citation into mongo

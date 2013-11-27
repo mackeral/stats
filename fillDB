@@ -1,12 +1,13 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 import ast, sys, json, re
 from citation import Citation
+sys.path.append('/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages')
 from pymongo import MongoClient
 from pprint import pprint
 
 if len(sys.argv) < 2:
-    sys.exit('usage: python fillDB.py fileToIngest.json')
+    sys.exit('usage: fillDB.py fileToIngest.json')
 else:
     jsonFile = sys.argv[1]
     m = re.search('\d([a-z\-_]+)\.', jsonFile);
