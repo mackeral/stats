@@ -1,41 +1,42 @@
 #!/usr/local/bin/python
 
-import ast, sys, json, re
+import ast, sys, json, re, glob
 from citation import Citation
 sys.path.append('/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages')
 from pymongo import MongoClient
 from pprint import pprint
 
 if len(sys.argv) < 2:
-    sys.exit('usage: fillDB.py fileToIngest.json')
+	sys.exit('usage: fillDB.py fileStem')
 else:
-    jsonFile = sys.argv[1]
-    m = re.search('\d([a-z\-_]+)\.', jsonFile);
-    if not m:
-        sys.exit('fileName in wrong format')
-    docType = m.group(1)
-    
-    client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
-    db = client.repos
-    
-    jsonContent = open(jsonFile)
-    jsonCitations = json.load(jsonContent)
-    jsonContent.close()
-    
-    citations = []
-    
-    for jsonCitation in jsonCitations:
-        if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
-            del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
-        elif docType in ('oai_etdms'):
-            del jsonCitation["metadata"][0]["thesis"][0]["$"]
-        #don't bring in SelectedWorks citations
-        if not re.match('oai:works.bepress.com:', jsonCitation['header'][0]['identifier'][0]):
-            citations.append(Citation(jsonCitation, docType))
-    
-    for citation in citations:
-        result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
-        #print result
-    
-    client.disconnect()
-    sys.exit("done. upserted " + str(len(citations)) + " entries")
+	jsonFiles = glob.glob(sys.argv[1] + "*")
+	client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
+	db = client.repos
+	for jsonFile in jsonFiles:
+		m = re.search('\d([a-z\-_]+)\.', jsonFile);
+		if not m:
+			sys.exit('fileName in wrong format')
+		docType = m.group(1)
+		jsonContent = open(jsonFile)
+		jsonCitations = json.load(jsonContent)
+		jsonContent.close()
+
+		citations = []
+
+		for jsonCitation in jsonCitations:
+			if docType in ('oai_dc', 'simple-dublin-core', 'qualified-dublin-core'):
+				del jsonCitation["metadata"][0]["oai_dc:dc"][0]["$"]
+			elif docType in ('oai_etdms'):
+				del jsonCitation["metadata"][0]["thesis"][0]["$"]
+			#don't bring in SelectedWorks citations
+			if not re.match('oai:works.bepress.com:', jsonCitation['header'][0]['identifier'][0]):
+				citations.append(Citation(jsonCitation, docType))
+
+		for i, citation in enumerate(citations):
+			result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
+			if(i%500==0):
+				print `i` + " upserted [" + docType + "]"
+			#print result
+
+		sys.exit(docType = " done. upserted " + str(len(citations)) + " entries")
+	client.disconnect()

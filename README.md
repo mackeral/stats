@@ -13,10 +13,6 @@ webserver runs on webdev
 + queries mongolab db
 
 
-usage
-=====
-
-
 stats
 =====
 
@@ -27,11 +23,6 @@ python
 pymongo
 + make sure you use the location of the python that has the modules installed. E.g. my local /usr/bin/python doesn't have pymongo but /usr/local/bin/python does
 
-harvest xml from bepress
-ingest citation into mongo
-ingest author data into mongo
-ingest download statistics int mongo
-
 
 
 workflow
@@ -39,6 +30,8 @@ workflow
 + use harvest.js to grab xml from bepress of all citations, in all four formats
 + use fillDB.py to insert them into the database. citations are keyed on header:identifier and are "upserted" (inserted if new, updated if existing)
 + use authors.py to associate authors with institutions
++ get statistics locally
++ use ingestStats.py to get statistics into mongo
  
 harvest.js
 ----------

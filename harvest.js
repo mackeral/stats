@@ -1,14 +1,19 @@
 var allowedFormats = ['oai_dc','simple-dublin-core','qualified-dublin-core','oai_etdms'];
 var baseURL = 'http://scholarship.law.berkeley.edu/do/oai/?verb=ListRecords&';
+var http = require('http');
+var fs = require('fs');
+var parseString = require('xml2js').parseString;
+today = new Date();
+var curr_date = ("0" + today.getDate()).slice(-2);
+var curr_month = ("0" + (today.getMonth() + 1)).slice(-2);
+var curr_year = today.getFullYear();
+var records = {};
 var maxRecords = 10000;
-var recordType;
 
-if(allowedFormats.indexOf(process.argv[2]) >= 0){
-    var http = require('http');
-    var parseString = require('xml2js').parseString;
-    var records = [];
-    recordType = process.argv[2]
-    http.get(baseURL + 'metadataPrefix=' + recordType, function(res){
+allowedFormats.forEach(function(format) {
+	harvestURL = baseURL + 'metadataPrefix=' + format;
+	records[format] = [];
+    http.get(harvestURL, function(res){
         var record;
         res.on('data', function(chunk){ record = record + chunk; });
         res.on('end', function(){
@@ -18,17 +23,17 @@ if(allowedFormats.indexOf(process.argv[2]) >= 0){
                 else {
                     var recordSet = result['OAI-PMH']['ListRecords'][0]['record'];
                     var resumptionToken = result['OAI-PMH']['ListRecords'][0]['resumptionToken'][0]['_'];
-                    recordSet.forEach(function(recordItem){ records.push(recordItem); });
-                    if(resumptionToken){ getMoreRecords(resumptionToken); }
+                    recordSet.forEach(function(recordItem){ records[format].push(recordItem); });
+                    if(resumptionToken){ getMoreRecords(format, resumptionToken); }
                     else finish();
                 }
             })
         });
     });
-} else { console.log('usage: node harvest (' + allowedFormats.join('|') + ')') }
+});
 
-function getMoreRecords(token){
-    console.log(records.length + ' records. getting more with ' + token );
+function getMoreRecords(format, token){
+    console.log(records[format].length + ': ' + token );
     http.get(baseURL + 'resumptionToken=' + token, function(res){
         var record;
         res.on('data', function(chunk){ record = record + chunk; });
@@ -39,25 +44,19 @@ function getMoreRecords(token){
                 else {
                     var recordSet = result['OAI-PMH']['ListRecords'][0]['record'];
                     var resumptionToken = result['OAI-PMH']['ListRecords'][0]['resumptionToken'][0]['_'];
-                    recordSet.forEach(function(recordItem){ records.push(recordItem); });
-                    if(resumptionToken && (records.length < maxRecords)){ getMoreRecords(resumptionToken); } 
-                    else finish();
+                    recordSet.forEach(function(recordItem){ records[format].push(recordItem); });
+                    if(resumptionToken && (records[format].length < maxRecords)){ getMoreRecords(format, resumptionToken); } 
+                    else finish(format);
                 }
             })
         });
     });
 }
 
-function finish(){ 
-    console.log('done. total of ' + records.length + ' records.');
-    fs = require('fs');
-    today = new Date();
-    var curr_date = ("0" + today.getDate()).slice(-2);
-    var curr_month = ("0" + (today.getMonth() + 1)).slice(-2);
-    var curr_year = today.getFullYear();
-    var fileName = 'records' + curr_year + curr_month + curr_date + recordType + '.json';
-    fs.writeFile(fileName, JSON.stringify(records), function(err){
+function finish(format){ 
+    var fileName = 'records' + curr_year + curr_month + curr_date + format + '.json';
+    fs.writeFile(fileName, JSON.stringify(records[format]), function(err){
         if(err) console.log('problem writing file:' + err);
-        else console.log('file written');
+        else console.log(fileName + ' written: ' + records[format].length + ' records');
     });
 }
