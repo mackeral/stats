@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 from pymongo import MongoClient
 
-client = MongoClient()
+client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
 db = client.repos
 
 lines = open('./authorsUCB.txt')

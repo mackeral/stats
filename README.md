@@ -35,15 +35,15 @@ workflow
  
 harvest.js
 ----------
-`node harvest (oai_dc|simple-dublin-core|qualified-dublin-core|oai_etdms)`
+`node harvest`
 
-creates a timestamped JSON file of citation objects
+creates timestamped JSON files of citation objects
 
 fillDB.py
 ---------
-`python fillDB.py file`
+`python fillDB.py fileNameRoot`
 
-inserts the objects in file into the database
+inserts the objects in json files into mongodb
 
 keys.py
 -------

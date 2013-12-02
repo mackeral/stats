@@ -34,9 +34,11 @@ else:
 
 		for i, citation in enumerate(citations):
 			result = db.citations.update({ "identifier" : citation.identifier}, {"$set": citation.__dict__}, True)
-			if(i%500==0):
+			if(i == 0):
+				print 'beginning ' + docType
+			elif(i%500==0):
 				print `i` + " upserted [" + docType + "]"
 			#print result
 
-		sys.exit(docType = " done. upserted " + str(len(citations)) + " entries")
+		print docType + " done. upserted " + str(len(citations)) + " entries"
 	client.disconnect()
