@@ -1,0 +1,81 @@
+#!/usr/local/bin/python
+
+from bson.son import SON
+from pprint import pprint
+from pymongo import MongoClient
+import json
+import re
+import operator
+"""
+import ast, sys, glob
+from citation import Citation
+sys.path.append('/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages')
+"""
+
+client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
+db = client.repos
+
+berkeleyAuthors = []
+berkeleyAuthorCounts = {}
+authors = db.authors.find({"institution":"Berkeley Law"})
+for author in authors:
+	berkeleyAuthors.append(author['lname'] + ", " + author['fname'][:2])
+	berkeleyAuthorCounts[author['lname'] + ", " + author['fname'][:2]] = 0;
+	
+citations = {}
+topBerkeleyAuthors = {}
+topJournalArticles = {}
+topSetSpecTitles = {}
+
+citationsResult = db.citations.find({})
+for citationResult in citationsResult:
+	citations[citationResult['dcIdentifier'][0]] = citationResult
+#pprint(citations)
+
+result = db.statistics.aggregate([{"$group": {"_id": "$dcIdentifier", "downloads": {"$sum": "$downloads"}}}, {"$sort": SON([("downloads", -1)])},])
+for stat in result['result']:
+	if stat['_id'] in citations and 'dcCreator' in citations[stat['_id']]:
+		#print("{} ({}) has {} downloads".format(stat['_id'], citations[stat['_id']]['setSpec'], stat['downloads']))
+		if citations[stat['_id']]['setSpec'] not in topJournalArticles:
+			topJournalArticles[citations[stat['_id']]['setSpec']] = stat['downloads']
+			topSetSpecTitles[citations[stat['_id']]['setSpec']] = stat['_id']
+		elif topJournalArticles[citations[stat['_id']]['setSpec']] < stat['downloads']:
+			topJournalArticles[citations[stat['_id']]['setSpec']] = stat['downloads']
+			topSetSpecTitles[citations[stat['_id']]['setSpec']] = stat['_id']
+		for dcCreator in citations[stat['_id']]['dcCreator']:
+			m = re.search('^([a-zA-Z]+, [a-zA-Z\.]{2})', dcCreator)
+			if m:
+				#pprint(m.group(1))
+				if m.group(1) in berkeleyAuthors:
+					#print("add {} to author {}".format(stat['downloads'], m.group(1)))
+					if m.group(1) not in topBerkeleyAuthors:
+						topBerkeleyAuthors[m.group(1)] = stat['downloads']
+					else:
+						topBerkeleyAuthors[m.group(1)] += stat['downloads']
+					berkeleyAuthorCounts[m.group(1)] += 1
+	#add to topJournalArticles?
+
+# TOP DOWNLOADED BERKELEYLAW AUTHORS
+#pprint(sorted(topBerkeleyAuthors.iteritems(), key=operator.itemgetter(1)))
+
+# TOP DOWNLOADED ARTICLE FOR EACH JOURNAL
+#pprint(topJournalArticles)
+#pprint(topSetSpecTitles)
+
+#pprint(berkeleyAuthorCounts)
+
+result = db.citations.find({}, {'dcIdentifier':1,'dateCreated':1,'dcCreator':1,'_id':0}).sort("dateCreated", 1)
+berkeleyLawArticles = {}
+for citation in result:
+	if 'dcCreator' in citation:
+		for dcCreator in citation['dcCreator']:
+			m = re.search('^([a-zA-Z]+, [a-zA-Z\.]{2})', dcCreator)
+			if m:
+				#pprint(m.group(1))
+				if m.group(1) in berkeleyAuthors:
+					#berkeleyLawArticles[citation['dcIdentifier'][0]] = m.group(1)
+					print citation
+
+pprint(berkeleyLawArticles)
+
+client.disconnect()

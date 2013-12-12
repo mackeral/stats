@@ -45,18 +45,17 @@ else:
         #print 'update db: id {} ingested on {}'.format(identifier, ingestDate)
         result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDateD }}, True)
         #print result
-        '''
     
         j = 3
         for col in row[3:]:
             m,d,y = cols[j].split('/');
-            if int(col) > 0:
-                #db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), int(d))})
+            if int(col) > 0 and int(m) > 8: # HERE I'M USING ONLY STATS FROM SEPTEMBER FORWARD (AUG=8TH MONTH)
+                #print 'id {}; {} dls on {}/{}/{}'.format(identifier, int(col), m, d, y)
                 db.statistics.save({'dcIdentifier': identifier, 'downloads': int(col), 'dlDate': datetime.datetime(int(y), int(m), 1), 'repo': 'Berkeley Law Scholarship Repository', 'file': dataFile})
                 totalStats += 1
             else:
                 pass #print 'zero, not statting {} for {}'.format(identifier, cols[j])
             j += 1
-        '''
+
     client.disconnect()
     sys.exit("done. ingested " + str(totalStats) + " entries")
