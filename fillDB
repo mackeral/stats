@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 import ast, sys, json, re, glob
 from citation import Citation
@@ -10,7 +10,8 @@ if len(sys.argv) < 2:
 	sys.exit('usage: fillDB.py fileStem')
 else:
 	jsonFiles = glob.glob(sys.argv[1] + "*")
-	client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
+	#client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
+        client = MongoClient()
 	db = client.repos
 	for jsonFile in jsonFiles:
 		m = re.search('\d([a-z\-_]+)\.', jsonFile);
