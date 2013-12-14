@@ -9,9 +9,20 @@ var curr_month = ("0" + (today.getMonth() + 1)).slice(-2);
 var curr_year = today.getFullYear();
 var records = {};
 var maxRecords = 10000;
+/*
+http://www.openarchives.org/OAI/openarchivesprotocol.html#SelectiveHarvestingandDatestamps
+datestamp of most recent: 
+	db.citations.find({}, {datestamp: 1, _id: 0}).sort({"datestamp": -1}).limit(1)
+	{ "datestamp" : "2013-11-23T23:22:13Z" }
+then use this to bring up to date:
+http://scholarship.law.berkeley.edu/do/oai/?verb=ListRecords&metadataPrefix=oai_dc&from=2013-11-23T23:22:13Z
+upsert to handle edits
+but what about deletes?
+*/
 
 allowedFormats.forEach(function(format) {
 	harvestURL = baseURL + 'metadataPrefix=' + format;
+	/*
 	records[format] = [];
     http.get(harvestURL, function(res){
         var record;
@@ -30,6 +41,7 @@ allowedFormats.forEach(function(format) {
             })
         });
     });
+	*/
 });
 
 function getMoreRecords(format, token){
