@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
-from pymongo import MongoClient
-
-#client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
-client = MongoClient()
-db = client.repos
+import MySQLdb as mdb
+db = mdb.connect('localhost', 'statsW', 'zeb', 'repo')
+cur = db.cursor()
 
 lines = open('./authorsUCB.txt')
 authors = []
-for line in lines:
-    chunks = line.strip().split()
-    db.authors.save({ 'lname': chunks[1], 'fname': chunks[0], 'institution': 'Berkeley Law' })
+with db:
+    for line in lines:
+        chunks = line.strip().split()
+        cur.execute("INSERT INTO authors (lname, fname, institution) VALUES (%s,%s,%s)", (chunks[1], chunks[0], 'Berkeley Law'))
 
-client.disconnect()
+db.close()

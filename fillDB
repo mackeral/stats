@@ -10,8 +10,8 @@ if len(sys.argv) < 2:
 	sys.exit('usage: fillDB.py fileStem')
 else:
 	jsonFiles = glob.glob(sys.argv[1] + "*")
-	#client = MongoClient('mongodb://lawlibrary:unclezeb@ds063287.mongolab.com:63287/repos')
-        client = MongoClient()
+
+	client = MongoClient()
 	db = client.repos
 	for jsonFile in jsonFiles:
 		m = re.search('\d([a-z\-_]+)\.', jsonFile);
@@ -39,7 +39,6 @@ else:
 				print 'beginning ' + docType
 			elif(i%500==0):
 				print `i` + " upserted [" + docType + "]"
-			#print result
-
 		print docType + " done. upserted " + str(len(citations)) + " entries"
 	client.disconnect()
+

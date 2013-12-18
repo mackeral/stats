@@ -1,5 +1,6 @@
 import csv, re, sys
 from citation import Citation
+from pymongo import MongoClient
 import MySQLdb as mdb
 import datetime
 
@@ -7,6 +8,8 @@ import datetime
 if len(sys.argv) < 2:
     sys.exit('usage: ./ingestStatsMySQL.py dataWithHeader OR ./ingestStatsMySQL.py -h=dataWithHeader data')
 else:
+    client = MongoClient()
+    mongoDB = client.repos
     db = mdb.connect('localhost', 'statsW', 'zeb', 'repo')
     dataFile = sys.argv[1]
     cur = db.cursor()
@@ -42,11 +45,10 @@ else:
         
             chunks = ingestDate.split('/')
             ingestDateD = datetime.datetime(int(chunks[2]), int(chunks[0]), int(chunks[1]))
-            #print 'update db: id {} ingested on {}'.format(identifier, ingestDate)
-            #result = db.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDateD }}, True)
-
+            result = mongoDB.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDateD }}, True)
+            
             j = 3
-            for col in row[3:]:
+           	for col in row[3:]:
                 m,d,y = cols[j].split('/');
                 if int(col) > 0:
                     cur.execute("INSERT INTO stats(dcID,dlDate,dlN,file,repo) VALUES(%s,%s,%s,%s,'Berkeley Law Scholarship Repository')",(identifier, datetime.date(int(y), int(m), 1), col, dataFile))
