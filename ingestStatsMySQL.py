@@ -48,7 +48,7 @@ else:
             result = mongoDB.citations.update({ "dcIdentifier": identifier }, {"$set": { 'ingestDate': ingestDateD }}, True)
             
             j = 3
-           	for col in row[3:]:
+            for col in row[3:]:
                 m,d,y = cols[j].split('/');
                 if int(col) > 0:
                     cur.execute("INSERT INTO stats(dcID,dlDate,dlN,file,repo) VALUES(%s,%s,%s,%s,'Berkeley Law Scholarship Repository')",(identifier, datetime.date(int(y), int(m), 1), col, dataFile))

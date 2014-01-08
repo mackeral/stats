@@ -10,7 +10,7 @@ processes
 =========
 + node harvest.js -[seed|update]
 ++ creates datestamped json files of citation objects
-+ fillDB filestem
++ python fillDB [filestem]
 ++ inserts citations from json files into document db
 + ingestStatsMySQL.py [dataWithHeader|-h=dataWithHeader data]
 
@@ -19,8 +19,8 @@ workflow
 + use harvest.js to grab xml from bepress of all citations, in all four formats
 + use fillDB.py to insert them into the database. citations are keyed on header:identifier and are "upserted" (inserted if new, updated if existing)
 + use authors.py to associate authors with institutions
-+ get statistics locally
-+ use ingestStats.py to get statistics into mongo
++ get statistics from bepress; account for any overlap (may need to delete any partial month stats that are in the db already)
++ use ingestStatsMySQL.py to get statistics into MySQL
  
 misc
 ====
