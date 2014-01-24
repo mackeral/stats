@@ -30,3 +30,7 @@ keys.py
 `python keys.py file`
 
 enumerates the metadata keys for the given docType
+
+
+fix:
+http://ec2-54-193-44-7.us-west-1.compute.amazonaws.com/statsWeb/personalAuthor.php?q=Asian%20American%20Law%20Journal
