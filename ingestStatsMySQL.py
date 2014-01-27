@@ -2,12 +2,16 @@ import csv, re, sys
 from citation import Citation
 from pymongo import MongoClient
 import MySQLdb as mdb
-import datetime
+import math, datetime
+from Bucket import Bucket
+from pprint import pprint
 
 
 if len(sys.argv) < 2:
     sys.exit('usage: ./ingestStatsMySQL.py dataWithHeader OR ./ingestStatsMySQL.py -h=dataWithHeader data')
 else:
+	
+	"""
     client = MongoClient()
     mongoDB = client.repos
     db = mdb.connect('localhost', 'statsW', 'zeb', 'repo')
@@ -57,6 +61,12 @@ else:
                     pass #print 'zero, not statting {} for {}'.format(identifier, cols[j])
                 j += 1
 
-    sys.exit("done. ingested " + str(totalStats) + " entries")
+    print "ingested " + str(totalStats) + " entries"
+"""	
+	#refresh summary files: avgDownloads.txt, structuresData.txt, structuresDownloads.txt
+	#find which stats records have no setSpec attribute
+	#select all of the above from citations
+	#populate them in stats
+	sys.exit("done")
 
 
